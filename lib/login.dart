@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen>
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          const MyHomePage(title: "Inventory"),
+                          MyHomePage(title: "Inventory"),
                     ));
                   },
                   style: ElevatedButton.styleFrom(

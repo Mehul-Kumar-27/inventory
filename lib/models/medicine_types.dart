@@ -12,7 +12,7 @@ class MedicineTypes {
   late final int? id;
   late final String name;
   late final String description;
-  late final int quantity;
+  late final String quantity;
   MedicineTypes({
     this.id,
     required this.name,
@@ -31,7 +31,7 @@ class MedicineTypes {
     int? id,
     String? name,
     String? description,
-    int? quantity
+    String? quantity
   }) => MedicineTypes(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -42,6 +42,6 @@ class MedicineTypes {
     id: json[MedicineTypesFields.id] as int?,
     name: json[MedicineTypesFields.name] as String,
     description: json[MedicineTypesFields.description] as String,
-    quantity: json[MedicineTypesFields.quantity] as int
+    quantity: json[MedicineTypesFields.quantity] as String
   );
 }
