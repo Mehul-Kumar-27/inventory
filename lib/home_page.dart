@@ -15,10 +15,8 @@ import 'package:inventory/theme/theme_constants.dart';
 import 'package:inventory/theme/theme_manager.dart';
 
 class MyHomePage extends StatefulWidget {
-  
   MyHomePage({
     Key? key,
-    
     required this.title,
   }) : super(key: key);
 
@@ -38,7 +36,6 @@ class _MyHomePageState extends State<MyHomePage> {
       themeListner();
     });
 
-    
     super.initState();
   }
 
@@ -48,17 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  List<Widget> pages = const [Index1(), Index1(), Index1()];
 
-
-  List<Widget> pages =const  [Index1(), Index1(), Index1()];
-
-
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(

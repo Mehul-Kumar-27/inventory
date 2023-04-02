@@ -1,8 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:inventory/add_medicine.dart';
 import 'package:inventory/database/db.dart';
 import 'package:inventory/models/medicine_types.dart';
@@ -16,6 +18,7 @@ class Index1 extends StatefulWidget {
 }
 
 class _Index1State extends State<Index1> {
+  bool showingMedicines = false;
   TextEditingController medicineTypeNameController = TextEditingController();
   TextEditingController medicineTypeDescriptionController =
       TextEditingController();
@@ -35,9 +38,10 @@ class _Index1State extends State<Index1> {
     getAllMedicineTypes();
     super.initState();
   }
+  int listIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return showingMedicines? AddMedicineToType(medicineTypes: medicineTypesList[listIndex]) :Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -182,14 +186,10 @@ class _Index1State extends State<Index1> {
 
                 return GestureDetector(
                   onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddMedicineToType(
-                          medicineTypes: medicineTypesList[index],
-                        ),
-                      ),
-                    );
+                   setState(() {
+                      listIndex = index;
+                      showingMedicines = true;
+                   });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -217,5 +217,28 @@ class _Index1State extends State<Index1> {
       ],
     );
   }
+  
 }
 
+class AddMedicineToType extends StatefulWidget {
+  MedicineTypes medicineTypes;
+  AddMedicineToType({
+    Key? key,
+    required this.medicineTypes,
+  }) : super(key: key);
+
+  @override
+  State<AddMedicineToType> createState() => _AddMedicineToTypeState();
+}
+
+class _AddMedicineToTypeState extends State<AddMedicineToType> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back)),
+        Text(widget.medicineTypes.name),
+      ],
+    );
+  }
+}
