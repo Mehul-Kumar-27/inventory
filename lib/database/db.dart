@@ -21,7 +21,16 @@ class MedicineDataBase {
     final dbPath = await getDatabasesPath();
     final path = dbPath + filePath;
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _createDB,
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion == 1) {
+          db.execute('''ALTER TABLE ${medicineTypes.medicineTypesTable} ADD COLUMN ${medicineTypes.MedicineTypesFields.quantity} INTEGER DEFAULT ${0}''');
+        }
+      },
+    );
   }
 
   Future _createDB(Database db, int version) async {
@@ -33,17 +42,17 @@ class MedicineDataBase {
       )''');
   }
 
-  Future<medicineTypes.MedicineTypes> create(
-      medicineTypes.MedicineTypes medicineType) async {
+  Future<MedicineTypes> create(MedicineTypes medicineType) async {
     final db = await instance.database;
     final json = medicineType.toJson();
     const columns =
-        '${medicineTypes.MedicineTypesFields.name}, ${medicineTypes.MedicineTypesFields.description}';
+        '"${medicineTypes.MedicineTypesFields.name}", "${medicineTypes.MedicineTypesFields.description}"';
     final values =
-        '${json[medicineTypes.MedicineTypesFields.name]}, ${json[medicineTypes.MedicineTypesFields.description]}';
+        '"${json[medicineTypes.MedicineTypesFields.name]}", "${json[medicineTypes.MedicineTypesFields.description]}"';
 
     final id = await db.rawInsert(
-        'INSERT INTO ${medicineTypes.medicineTypesTable} ($columns) VALUES ($values)');
+        '''INSERT INTO ${medicineTypes.medicineTypesTable} ($columns) VALUES ($values)''');
+    print(id);
     return medicineType.copy(id: id);
   }
 
@@ -63,7 +72,7 @@ class MedicineDataBase {
     return result.map((json) => MedicineTypes.fromJson(json)).toList();
   }
 
-  Future<List<MedicineTypes>> readAllMedicineTypes(String queryInfo) async {
+  Future<List<MedicineTypes>> readAllMedicineTypes() async {
     final db = await instance.database;
     final result =
         await db.rawQuery('''SELECT * FROM ${medicineTypes.medicineTypesTable}

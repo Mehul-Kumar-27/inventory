@@ -42,7 +42,7 @@ ThemeData lighTheme = ThemeData(
           fontWeight: FontWeight.bold,
         ),
         headline6: GoogleFonts.poppins(
-          color: color1,
+          color: color4,
           fontSize: 10,
           fontWeight: FontWeight.bold,
         ),
@@ -81,6 +81,7 @@ ThemeData lighTheme = ThemeData(
           fontSize: 10,
           fontWeight: FontWeight.normal,
         )),
+       
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(color7))),
