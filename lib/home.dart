@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import 'package:inventory/add_medicine.dart';
 import 'package:inventory/database/db.dart';
+import 'package:inventory/models/medicine.dart';
 import 'package:inventory/models/medicine_types.dart';
 import 'package:inventory/theme/theme_constants.dart';
 
@@ -38,207 +39,345 @@ class _Index1State extends State<Index1> {
     getAllMedicineTypes();
     super.initState();
   }
+
   int listIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return showingMedicines? AddMedicineToType(medicineTypes: medicineTypesList[listIndex]) :Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height * 0.2,
-          width: MediaQuery.of(context).size.width * 0.9,
-          decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(10)),
-          child: Row(
+    return showingMedicines
+        ? medicineList(medicineTypesList[listIndex])
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    "Welcome",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  Text(dateToday, style: Theme.of(context).textTheme.headline6),
-                ],
-              ),
+            children: <Widget>[
               Container(
-                height: MediaQuery.of(context).size.height * 0.156,
-                width: MediaQuery.of(context).size.width * 0.457,
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width * 0.9,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  shape: BoxShape.circle,
-                  boxShadow: const [
-                    BoxShadow(
-                        color: color1, blurRadius: 5, offset: Offset(0, 3)),
-                    BoxShadow(
-                        color: color1, blurRadius: 5, offset: Offset(3, 0))
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "Welcome",
+                          style: Theme.of(context).textTheme.headline3,
+                        ),
+                        Text(dateToday,
+                            style: Theme.of(context).textTheme.headline6),
+                      ],
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.156,
+                      width: MediaQuery.of(context).size.width * 0.457,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                              color: color1,
+                              blurRadius: 5,
+                              offset: Offset(0, 3)),
+                          BoxShadow(
+                              color: color1,
+                              blurRadius: 5,
+                              offset: Offset(3, 0))
+                        ],
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Medicine Types",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            Text(
+                              medicineTypesList.length.toString(),
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Medicine Types",
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      Text(
-                        medicineTypesList.length.toString(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: TextFormField(
+                  controller: medicineTypeNameController,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Name",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: TextFormField(
+                  controller: medicineTypeDescriptionController,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Description",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      List<Map<String, String>> quantity = [
+                        {
+                          '''"$dateToday"''': "0",
+                        },
+                      ];
+
+                      MedicineTypes medicineType = MedicineTypes(
+                        name: medicineTypeNameController.text,
+                        description: medicineTypeDescriptionController.text,
+                        quantity: quantity.toString(),
+                      );
+
+                      final String jsonString = medicineType.quantity;
+                      final List<Map<String, dynamic>> resultList =
+                          List<Map<String, dynamic>>.from(
+                              jsonDecode(jsonString));
+                      final int myValue = resultList[0].values.first;
+                      print(myValue);
+                      await MedicineTypeDataBase.instance
+                          .create(medicineType)
+                          .then((value) {
+                        medicineTypeNameController.clear();
+                        medicineTypeDescriptionController.clear();
+                        getAllMedicineTypes();
+                        print("Created!!!!!!!!!!1");
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      "Add Medicine Type",
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: medicineTypesList.length,
+                    itemBuilder: (context, index) {
+                      final String jsonString = medicineTypesList[index]
+                          .quantity
+                          .replaceAll("\\", "");
+                      final List<Map<String, dynamic>> resultList =
+                          List<Map<String, dynamic>>.from(
+                              jsonDecode(jsonString));
+                      final int myValue =
+                          resultList[resultList.length - 1].values.first;
+
+                      return GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            listIndex = index;
+                            showingMedicines = true;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Material(
+                            elevation: 10,
+                            child: ListTile(
+                              title: Text(
+                                medicineTypesList[index].name,
+                                style: Theme.of(context).textTheme.headline4,
+                              ),
+                              trailing: Text(
+                                myValue.toString(),
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                              subtitle: Text(
+                                medicineTypesList[index].description,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              )
+            ],
+          );
+  }
+
+  Widget medicineList(MedicineTypes medicineTypes) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    showingMedicines = false;
+                  });
+                },
+                icon: const Icon(Icons.arrow_back)),
+            const SizedBox(width: 40),
+            Flexible(
+              flex: 3,
+              child: Text(
+                "Add Medicine to ${medicineTypes.name} category",
+                style: Theme.of(context).textTheme.headline4,
+                overflow: TextOverflow.clip,
+              ),
+            ),
+            IconButton(
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return popupForm(medicineTypes);
+                      });
+                },
+                icon: const Icon(
+                  Icons.add_box,
+                  color: Colors.green,
+                  size: 30,
+                ))
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget popupForm(MedicineTypes medicineTypes) {
+    final _formKey = GlobalKey<FormState>();
+    TextEditingController medicineNameController = TextEditingController();
+    TextEditingController medicineDescriptionController =
+        TextEditingController();
+    TextEditingController medicineQuantityController = TextEditingController();
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: medicineNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
+              ),
+              TextFormField(
+                controller: medicineDescriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                ),
+              ),
+              TextFormField(
+                controller: medicineQuantityController,
+                decoration: const InputDecoration(
+                  labelText: 'Quantity',
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  print(medicineNameController.text);
+                  print(medicineDescriptionController.text);
+                  print(medicineQuantityController.text);
+                  List<Map<String, String>> quantity = [
+                    {
+                      '''"$dateToday"''': medicineQuantityController.text,
+                    },
+                  ];
+                  if (medicineNameController.text.isEmpty ||
+                      medicineDescriptionController.text.isEmpty ||
+                      medicineQuantityController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Please fill all the fields'),
+                    ));
+                  } else {
+                    Medicine m = Medicine(
+                        name: medicineNameController.text,
+                        description: medicineDescriptionController.text,
+                        quantity: quantity.toString(),
+                        medicineType: medicineTypes.name);
+
+                    // await MedicineTypeDataBase.instance
+                    //     .createMedicine(m)
+                    //     .then((value) {
+                    //   print(value.id);
+                    //   print(value.name);
+                    //   print(value.medicineType);
+                    // }).then((value) {
+
+                    //   medicineNameController.clear();
+                    //   medicineDescriptionController.clear();
+                    //   medicineQuantityController.clear();
+
+                    // });
+
+                    final String jsonString =
+                        medicineTypes.quantity.replaceAll("\\", "");
+                    final List<Map<String, dynamic>> resultList =
+                        List<Map<String, dynamic>>.from(jsonDecode(jsonString));
+                    bool found = false;
+                    for (var element in resultList) {
+                      print(dateToday);
+                      print(element.keys.first.toString());
+                      if (element.keys.first.toString() == dateToday) {
+                        print("true");
+                        found = true;
+                        print(element[dateToday]);
+                        element[dateToday] = element[dateToday] + 1;
+                      }
+
+                      print(element[dateToday]);
+                    }
+
+                    if (found == false) {
+                      final int myValue =
+                          resultList[resultList.length - 1].values.first + 1;
+                      Map<String, String> newEntry = {
+                        '''"$dateToday"''': myValue.toString(),
+                      };
+                      resultList.add(newEntry);
+                    }
+
+                    //print(m.quantity);
+                  }
+                },
+                child: const Text('Save'),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextFormField(
-            controller: medicineTypeNameController,
-            obscureText: false,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: "Name",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextFormField(
-            controller: medicineTypeDescriptionController,
-            obscureText: false,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              hintText: "Description",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                List<Map<String, String>> quantity = [
-                  {
-                    '''"$dateToday"''': "0",
-                  },
-                ];
-
-                MedicineTypes medicineType = MedicineTypes(
-                  name: medicineTypeNameController.text,
-                  description: medicineTypeDescriptionController.text,
-                  quantity: quantity.toString(),
-                );
-
-                final String jsonString = medicineType.quantity;
-                final List<Map<String, dynamic>> resultList =
-                    List<Map<String, dynamic>>.from(jsonDecode(jsonString));
-                final int myValue = resultList[0].values.first;
-                print(myValue);
-                await MedicineTypeDataBase.instance
-                    .create(medicineType)
-                    .then((value) {
-                  medicineTypeNameController.clear();
-                  medicineTypeDescriptionController.clear();
-                  getAllMedicineTypes();
-                  print("Created!!!!!!!!!!1");
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                "Add Medicine Type",
-                style: TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: ListView.builder(
-              itemCount: medicineTypesList.length,
-              itemBuilder: (context, index) {
-                final String jsonString =
-                    medicineTypesList[index].quantity.replaceAll("\\", "");
-                final List<Map<String, dynamic>> resultList =
-                    List<Map<String, dynamic>>.from(jsonDecode(jsonString));
-                final int myValue = resultList[0].values.first;
-
-                return GestureDetector(
-                  onTap: () async {
-                   setState(() {
-                      listIndex = index;
-                      showingMedicines = true;
-                   });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Material(
-                      elevation: 10,
-                      child: ListTile(
-                        title: Text(
-                          medicineTypesList[index].name,
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                        trailing: Text(
-                          myValue.toString(),
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        subtitle: Text(
-                          medicineTypesList[index].description,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-        )
-      ],
-    );
-  }
-  
-}
-
-class AddMedicineToType extends StatefulWidget {
-  MedicineTypes medicineTypes;
-  AddMedicineToType({
-    Key? key,
-    required this.medicineTypes,
-  }) : super(key: key);
-
-  @override
-  State<AddMedicineToType> createState() => _AddMedicineToTypeState();
-}
-
-class _AddMedicineToTypeState extends State<AddMedicineToType> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back)),
-        Text(widget.medicineTypes.name),
-      ],
+      ),
     );
   }
 }
