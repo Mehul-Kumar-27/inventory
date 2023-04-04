@@ -24,26 +24,26 @@ class MedicineTypeDataBase {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 1,
       onCreate: _createDB,
-      onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion == 3) {
-          createMedicineTable(db, newVersion);
-        }
-      },
+      // onUpgrade: (db, oldVersion, newVersion) {
+      //   if (oldVersion == 3) {
+      //     createMedicineTable(db, newVersion);
+      //   }
+      // },
     );
   }
 
-  Future createMedicineTable(Database db, int version) async {
-    db.execute('''
-CREATE TABLE ${medicine.medicineTable}(
-        ${medicine.MedicineFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-        ${medicine.MedicineFields.name} TEXT NOT NULL,
-        ${medicine.MedicineFields.description} TEXT NOT NULL,
-        ${medicine.MedicineFields.medicineType} TEXT NOT NULL,
-        ${medicine.MedicineFields.quantity} String NOT NULL
-      )''');
-  }
+//   Future createMedicineTable(Database db, int version) async {
+//     db.execute('''
+// CREATE TABLE ${medicine.medicineTable}(
+//         ${medicine.MedicineFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+//         ${medicine.MedicineFields.name} TEXT NOT NULL,
+//         ${medicine.MedicineFields.description} TEXT NOT NULL,
+//         ${medicine.MedicineFields.medicineType} TEXT NOT NULL,
+//         ${medicine.MedicineFields.quantity} String NOT NULL
+//       )''');
+//   }
 
   Future _createDB(Database db, int version) async {
     db.execute('''
@@ -54,7 +54,14 @@ CREATE TABLE ${medicine.medicineTable}(
         ${medicineTypes.MedicineTypesFields.quantity} TEXT NOT NULL
       )''');
 
-   
+    db.execute('''
+CREATE TABLE ${medicine.medicineTable}(
+        ${medicine.MedicineFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${medicine.MedicineFields.name} TEXT NOT NULL,
+        ${medicine.MedicineFields.description} TEXT NOT NULL,
+        ${medicine.MedicineFields.medicineType} TEXT NOT NULL,
+        ${medicine.MedicineFields.quantity} String NOT NULL
+      )''');
   }
 
   Future<MedicineTypes> create(MedicineTypes medicineType) async {
@@ -62,9 +69,8 @@ CREATE TABLE ${medicine.medicineTable}(
     final json = medicineType.toJson();
     const columns =
         '"${medicineTypes.MedicineTypesFields.name}", "${medicineTypes.MedicineTypesFields.description}", "${medicineTypes.MedicineTypesFields.quantity}"';
-    final quantity = json[medicineTypes.MedicineTypesFields.quantity]
-        .toString()
-        .replaceAll('"', '\\"');
+    final quantity = json[medicineTypes.MedicineTypesFields.quantity];
+
     final values =
         '''"${json[medicineTypes.MedicineTypesFields.name]}", "${json[medicineTypes.MedicineTypesFields.description]}", '$quantity' ''';
 
@@ -110,11 +116,12 @@ CREATE TABLE ${medicine.medicineTable}(
       ''');
   }
 
-  Future<int> updateMedicineTypeQuantity(MedicineTypes medicineType) async {
+  Future<int> updateMedicineTypeQuantity(
+      MedicineTypes medicineType, String newQuantity) async {
     final db = await instance.database;
     return db.rawUpdate('''
       UPDATE ${medicineTypes.medicineTypesTable}
-      SET ${medicineTypes.MedicineTypesFields.quantity} = '${medicineType.quantity}',
+      SET ${medicineTypes.MedicineTypesFields.quantity} = '$newQuantity'
     
       WHERE ${medicineTypes.MedicineTypesFields.id} = ${medicineType.id}
       ''');
