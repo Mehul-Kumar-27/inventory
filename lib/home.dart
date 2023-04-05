@@ -33,7 +33,17 @@ class _Index1State extends State<Index1> {
     });
   }
 
+  getAllMedicinesOfParticularType(String medicineType) async {
+    await MedicineTypeDataBase.instance
+        .readAllMedicineOfMedicineType(medicineType)
+        .then((value) {
+      medicines.clear();
+      medicines = value;
+    });
+  }
+
   List<MedicineTypes> medicineTypesList = [];
+  List<Medicine> medicines = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -241,6 +251,8 @@ class _Index1State extends State<Index1> {
                           setState(() {
                             listIndex = index;
                             showingMedicines = true;
+                            getAllMedicinesOfParticularType(
+                                medicineTypesList[index].name);
                           });
                           // await MedicineTypeDataBase.instance
                           //     .deleteMedicineType(medicineTypesList[index].id!)
@@ -311,6 +323,21 @@ class _Index1State extends State<Index1> {
                 ))
           ],
         ),
+        Expanded(
+            child: ListView.builder(
+                itemCount: medicines.length,
+                itemBuilder: (context, index) {
+                  var jsonString = jsonDecode(medicines[index].quantity);
+                  Map<String, int> quantityMap =
+                      Map<String, int>.from(jsonString);
+                  LinkedHashMap<String, int> quantityLinkedMap =
+                      LinkedHashMap.from(quantityMap);
+                  int quantityInMedicine = quantityLinkedMap.entries.last.value;
+                  return ListTile(
+                    leading: Text(medicines[index].name),
+                    trailing: Text("$quantityInMedicine"),
+                  );
+                }))
       ],
     );
   }
@@ -342,6 +369,7 @@ class _Index1State extends State<Index1> {
                 ),
               ),
               TextFormField(
+                keyboardType: TextInputType.number,
                 controller: medicineQuantityController,
                 decoration: const InputDecoration(
                   labelText: 'Quantity',
@@ -353,9 +381,15 @@ class _Index1State extends State<Index1> {
                   print(medicineNameController.text);
                   print(medicineDescriptionController.text);
                   print(medicineQuantityController.text);
-                  Map<String, String> quantity = {
-                    '''"$dateToday"''': medicineQuantityController.text,
-                  };
+                  int quantityNumber =
+                      int.parse(medicineQuantityController.text);
+                  Map<String, int> q = {dateToday: quantityNumber};
+                  print(q);
+                  LinkedHashMap<String, int> quantity = LinkedHashMap.from(q);
+                  print("ugfdjhdsdgfgvdsv");
+                  var jsonQuantity = jsonEncode(quantity);
+                  print(jsonQuantity);
+                  print(quantity);
 
                   if (medicineNameController.text.isEmpty ||
                       medicineDescriptionController.text.isEmpty ||
@@ -367,7 +401,7 @@ class _Index1State extends State<Index1> {
                     Medicine m = Medicine(
                         name: medicineNameController.text,
                         description: medicineDescriptionController.text,
-                        quantity: quantity.toString(),
+                        quantity: jsonQuantity.toString(),
                         medicineType: medicineTypes.name);
 
                     await MedicineTypeDataBase.instance
@@ -376,43 +410,13 @@ class _Index1State extends State<Index1> {
                       print(value.id);
                       print(value.name);
                       print(value.medicineType);
+                      print(value.quantity);
+                      setState(() {
+                        getAllMedicinesOfParticularType(medicineTypes.name);
+                      });
+                    }).then((value) {
+                      Navigator.pop(context);
                     });
-
-                    final String jsonString =
-                        medicineTypes.quantity.replaceAll("\\", "");
-                    final List<Map<String, dynamic>> resultList =
-                        List<Map<String, dynamic>>.from(jsonDecode(jsonString));
-                    bool found = false;
-                    for (var element in resultList) {
-                      print(dateToday);
-                      print(element.keys.first.toString());
-                      if (element.keys.first.toString() == dateToday) {
-                        print("true");
-                        found = true;
-                        print(element[dateToday]);
-                        element[dateToday] = element[dateToday] + 1;
-                      }
-
-                      print(element[dateToday]);
-                    }
-
-                    // if (found == false) {
-                    //   final int myValue =
-                    //       resultList[resultList.length - 1].values.first + 1;
-                    //   Map<String, String> newEntry = {
-                    //     '''"$dateToday"''': myValue.toString(),
-                    //   };
-                    //   resultList.add(newEntry);
-                    //   String newQuantity = resultList.toString();
-                    //   MedicineTypeDataBase.instance.updateMedicineTypeQuantity(
-                    //       medicineTypes, newQuantity);
-                    // } else {
-                    //   String newQuantity = resultList.toString();
-                    //   MedicineTypeDataBase.instance.updateMedicineTypeQuantity(
-                    //       medicineTypes, newQuantity);
-                    // }
-
-                    //print(m.quantity);
                   }
                 },
                 child: const Text('Save'),

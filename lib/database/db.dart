@@ -142,9 +142,8 @@ CREATE TABLE ${medicine.medicineTable}(
     final json = m.toJson();
     const columns =
         '"${medicine.MedicineFields.name}", "${medicine.MedicineFields.description}", "${medicine.MedicineFields.quantity}", "${medicine.MedicineFields.medicineType}"';
-    final quantity = json[medicine.MedicineFields.quantity]
-        .toString()
-        .replaceAll('"', '\\"');
+    final quantity = json[medicine.MedicineFields.quantity];
+
     final values =
         '''"${json[medicine.MedicineFields.name]}", "${json[medicine.MedicineFields.description]}", '$quantity', "${json[medicine.MedicineFields.medicineType]}"''';
 
@@ -154,10 +153,10 @@ CREATE TABLE ${medicine.medicineTable}(
     return m.copy(id: id);
   }
 
-  Future<List<Medicine>> readAllMedicineOfName(String queryInfo) async {
+  Future<List<Medicine>> readAllMedicineOfMedicineType(String queryInfo) async {
     final db = await instance.database;
     final result = await db.rawQuery('''SELECT * FROM ${medicine.medicineTable}
-        where ${medicine.MedicineFields.name} like '%$queryInfo%'
+        where ${medicine.MedicineFields.medicineType} like '%$queryInfo%'
         ''');
 
     return result.map((json) => Medicine.fromJson(json)).toList();
