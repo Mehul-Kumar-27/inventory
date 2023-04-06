@@ -3,6 +3,10 @@ import 'package:inventory/models/medicine_types.dart' as medicineTypes;
 import 'package:sqflite/sqflite.dart';
 import 'package:inventory/models/medicine.dart' as medicine;
 import '../models/medicine_types.dart';
+import 'package:path/path.dart';
+import 'package:csv/csv.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class MedicineTypeDataBase {
   static final MedicineTypeDataBase instance = MedicineTypeDataBase._init();
@@ -187,5 +191,65 @@ CREATE TABLE ${medicine.medicineTable}(
       DELETE FROM ${medicine.medicineTable}
       WHERE ${medicine.MedicineFields.id} = $id
       ''');
+  }
+
+  // void exportDatabaseToCsv() async {
+  //   // Open the database
+  //   final databasePath = await getDatabasesPath();
+  //   final database = await openDatabase(
+  //     join(databasePath, 'my_database.db'),
+  //     version: 1,
+  //   );
+
+  //   final db = await instance.database;
+
+  //   // Query the data
+  //   final List<Map<String, dynamic>> data =
+  //       await db.query("medicine_types");
+
+  //   // Convert the data to CSV format
+  //   final csvData = const ListToCsvConverter().convert(
+  //     data.map((e) => e.values.toList()).toList(),
+  //   );
+
+  //   // Get the path for the documents directory
+  //   final documentsDirectory = await getApplicationDocumentsDirectory();
+  //   final filePath = '${documentsDirectory.path}/medicineProject.csv';
+
+  //   // Write the CSV data to a file
+  //   final file = File(filePath);
+  //   await file.writeAsString(csvData);
+
+  //   // Close the database
+  //   await database.close();
+  // }
+
+  void exportDatabaseToCsv() async {
+    // Open the database
+    final databasePath = await getDatabasesPath();
+    final database = await openDatabase(
+      join(databasePath, 'my_database.db'),
+      version: 1,
+    );
+    final db = await instance.database;
+
+    // Query the data
+    final List<Map<String, dynamic>> data =
+        await db.query("medicine_types");
+
+    // Convert the data to CSV format
+    final csvData = const ListToCsvConverter().convert(
+      data.map((e) => e.values.toList()).toList(),
+    );
+
+    // Get the path to the root directory of the Flutter project
+    final rootDirPath = Directory.current.path;
+
+    // Write the CSV data to a file in the root directory of the project
+    final file = File(join(rootDirPath, 'my_database.csv'));
+    await file.writeAsString(csvData);
+
+    // Close the database
+    await database.close();
   }
 }

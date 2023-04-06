@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   flutter_staggered_grid_view: ^0.6.2
   curved_navigation_bar: ^1.0.3
+  csv: ^5.0.1
 
 dev_dependencies:
   flutter_test:

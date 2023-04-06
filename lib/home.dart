@@ -407,16 +407,33 @@ class _Index1State extends State<Index1> {
                     await MedicineTypeDataBase.instance
                         .createMedicine(m)
                         .then((value) {
-                      print(value.id);
-                      print(value.name);
-                      print(value.medicineType);
-                      print(value.quantity);
                       setState(() {
                         getAllMedicinesOfParticularType(medicineTypes.name);
                       });
-                    }).then((value) {
-                      Navigator.pop(context);
                     });
+
+                    List<MedicineTypes> type = await MedicineTypeDataBase
+                        .instance
+                        .readAllMedicineTypesOfName(m.medicineType);
+                    MedicineTypes medType = type[0];
+                    var jsonQuantityfromMed = jsonDecode(medType.quantity);
+                    Map<String, int> mapMed =
+                        Map<String, int>.from(jsonQuantityfromMed);
+                    LinkedHashMap<String, int> linkedHashMapQuantiy =
+                        LinkedHashMap.from(mapMed);
+                    if (linkedHashMapQuantiy.containsKey(dateToday)) {
+                      linkedHashMapQuantiy.update(
+                          dateToday, (value) => value + 1);
+                    } else {
+                      int amount = linkedHashMapQuantiy.entries.last.value + 1;
+                      final newDateEntry = <String, int>{dateToday: amount};
+                      linkedHashMapQuantiy.addEntries(newDateEntry.entries);
+                    }
+
+                    var newQuantityJson = jsonEncode(linkedHashMapQuantiy);
+                    await MedicineTypeDataBase.instance
+                        .updateMedicineTypeQuantity(
+                            medType, newQuantityJson.toString());
                   }
                 },
                 child: const Text('Save'),

@@ -60,11 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
           style: Theme.of(context).textTheme.headline3,
         ),
         actions: [
-          Switch(
-              value: themeManager.themeMode == ThemeMode.dark,
-              onChanged: (newValue) {
-                themeManager.toggleTheme(newValue);
-              })
+          TextButton(
+              onPressed: () {
+                MedicineTypeDataBase.instance.exportDatabaseToCsv();
+              },
+              child: const Text("Get Data"))
         ],
       ),
       body: Padding(

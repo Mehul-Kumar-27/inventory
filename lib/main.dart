@@ -48,6 +48,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: lighTheme,
+      debugShowCheckedModeBanner: false,
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -55,5 +56,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-
