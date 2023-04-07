@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventory/authScreen.dart';
 import 'package:inventory/login.dart';
 import 'package:inventory/theme/theme_constants.dart';
 import 'package:inventory/theme/theme_manager.dart';
@@ -52,7 +53,7 @@ class _MyAppState extends State<MyApp> {
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: LoginScreen(),
+      home: AuthScreen(),
     );
   }
 }

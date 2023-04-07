@@ -253,3 +253,17 @@ CREATE TABLE ${medicine.medicineTable}(
     await database.close();
   }
 }
+
+
+// <?php
+// require_once('db.php');
+
+// $query = "CREATE TABLE `id20568975_medicinedatabase`.`medicineTypes` ( `medicineTypeId` INT(11) NOT NULL AUTO_INCREMENT ,  `medicineTypeName` VARCHAR(255) NOT NULL ,  `medicineTypeName` VARCHAR(255) NOT NULL ,  `medicineTypeQuantity` VARCHAR(255) NOT NULL ,    PRIMARY KEY  (`medicineTypeId`)) ENGINE = InnoDB";
+// $stm = $db->prepare($query);
+// if ($stm->execute()) {
+//     echo 'Table created successfully';
+// } else {
+//     $error = $stm->errorInfo();
+//     echo 'Error creating table: ' . $error[2];
+// }
+// ?>

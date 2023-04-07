@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:inventory/database/backend_services.dart';
 import 'package:inventory/home_page.dart';
 import 'package:inventory/main.dart';
 import 'package:inventory/theme/theme_constants.dart' as theme;
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -62,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextFormField(
+                    controller: userNameController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -79,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -96,11 +104,9 @@ class _LoginScreenState extends State<LoginScreen>
               FadeTransition(
                 opacity: _animation,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          MyHomePage(title: "Inventory"),
-                    ));
+                  onPressed: () async {
+                    await BackendService.authenticateUser(
+                        userNameController.text, passwordController.text);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -123,6 +129,22 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       ),
     );
+  }
+
+  var url = "https://weightless-dimensio.000webhostapp.com/";
+
+  Future createTable() async {
+    var url =
+        "https://weightless-dimensio.000webhostapp.com/createTableMedicineType.php";
+    http.Response response = await http.get(Uri.parse(url));
+    print(jsonDecode(response.body));
+  }
+
+  Future addUser(String userName, String userPassword) async {
+    var url = "https://weightless-dimensio.000webhostapp.com/addUser.php";
+    var response = await http.post(Uri.parse(url),
+        body: {'userName': userName, 'userPassword': userPassword});
+    print(response.body);
   }
 
   @override
