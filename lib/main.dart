@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:inventory/authScreen.dart';
+import 'package:inventory/home_page.dart';
+
 import 'package:inventory/login.dart';
 import 'package:inventory/onboarding_screen.dart';
 import 'package:inventory/theme/theme_constants.dart';
 import 'package:inventory/theme/theme_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  // Obtain shared preferences.
+
   runApp(const MyApp());
 }
 
@@ -20,29 +24,22 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    themeManager.removeListener(() {
-      themeListner();
+  bool isLoggedIn = false;
+  
+  getSharedPreferences() async {
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     });
-    super.dispose();
+
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    themeManager.addListener(() {
-      themeListner();
-    });
+    getSharedPreferences();
+    
     super.initState();
-  }
-
-  themeListner() {
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -54,7 +51,9 @@ class _MyAppState extends State<MyApp> {
       darkTheme: darkTheme,
       themeMode: themeManager.themeMode,
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: const OnboardingScreen(),
+      home: isLoggedIn
+          ? MyHomePage(title: "Inventory")
+          : const OnboardingScreen(),
     );
   }
 }

@@ -105,8 +105,9 @@ class _LoginScreenState extends State<LoginScreen>
                 opacity: _animation,
                 child: ElevatedButton(
                   onPressed: () async {
-                    await BackendService.authenticateUser(
+                    String response = await BackendService.addUser(
                         userNameController.text, passwordController.text);
+                    print(response);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -138,13 +139,6 @@ class _LoginScreenState extends State<LoginScreen>
         "https://weightless-dimensio.000webhostapp.com/createTableMedicineType.php";
     http.Response response = await http.get(Uri.parse(url));
     print(jsonDecode(response.body));
-  }
-
-  Future addUser(String userName, String userPassword) async {
-    var url = "https://weightless-dimensio.000webhostapp.com/addUser.php";
-    var response = await http.post(Uri.parse(url),
-        body: {'userName': userName, 'userPassword': userPassword});
-    print(response.body);
   }
 
   @override

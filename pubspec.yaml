@@ -48,6 +48,7 @@ dependencies:
   flutter_svg: ^2.0.4
   lottie: ^2.3.2
   rive: ^0.10.3
+  shared_preferences: ^2.1.0
 
 dev_dependencies:
   flutter_test:
