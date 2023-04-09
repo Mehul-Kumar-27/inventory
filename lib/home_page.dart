@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory/home.dart';
-import 'package:inventory/side_view.dart';
+import 'package:inventory/side%20view/side_view.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:inventory/add_medicine.dart';
@@ -36,26 +36,38 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          widget.title,
-          style: Theme.of(context).textTheme.displaySmall,
-        ),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const SideView()));
-              },
-              child: const Text("Get Data"))
-        ],
-      ),
       body: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8, top: 20),
-        child: pages[bottomNavigationIndex],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            bottomNavigationIndex == 0
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.only(top: 12.0, left: 16.0),
+                        child: Text(
+                          "Inventory !",
+                          style: TextStyle(fontFamily: "Poppins", fontSize: 30),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.0, bottom: 10),
+                        child: Text(
+                          "Manage your shop like Pro",
+                          style: TextStyle(
+                              fontFamily: "Poppins",
+                              fontSize: 15,
+                              color: color2),
+                        ),
+                      ),
+                    ],
+                  )
+                : const Text(""),
+            Expanded(child: pages[bottomNavigationIndex]),
+          ],
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         index: bottomNavigationIndex,
@@ -90,38 +102,38 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class ContainerBoxWidget extends StatelessWidget {
-  String text;
-  ContainerBoxWidget({
-    Key? key,
-    required this.text,
-  }) : super(key: key);
+// class ContainerBoxWidget extends StatelessWidget {
+//   String text;
+//   ContainerBoxWidget({
+//     Key? key,
+//     required this.text,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.2,
-      width: MediaQuery.of(context).size.width * 0.3,
-      decoration: BoxDecoration(
-          color: color1,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(1),
-              spreadRadius: 4,
-              blurRadius: 5,
-              offset: const Offset(3, 3),
-            ),
-          ]),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text(
-            text,
-            style: Theme.of(context).textTheme.headline3,
-          )
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: MediaQuery.of(context).size.height * 0.2,
+//       width: MediaQuery.of(context).size.width * 0.3,
+//       decoration: BoxDecoration(
+//           color: color1,
+//           borderRadius: BorderRadius.circular(20),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.grey.withOpacity(1),
+//               spreadRadius: 4,
+//               blurRadius: 5,
+//               offset: const Offset(3, 3),
+//             ),
+//           ]),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.end,
+//         children: [
+//           Text(
+//             text,
+//             style: Theme.of(context).textTheme.headline3,
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }

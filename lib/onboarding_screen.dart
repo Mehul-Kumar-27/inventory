@@ -132,9 +132,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Future<void> login(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
-    await prefs.setString(
-      "username", username
-    );
+    await prefs.setString("username", username);
   }
 
   @override
@@ -272,8 +270,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               await BackendService.addUser(
                                                   userName.text,
                                                   userPassword.text);
-                                          userName.clear();
-                                          userPassword.clear();
 
                                           if (response == "User exists") {
                                             showScaffoldMessenge(
@@ -290,8 +286,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           response = await BackendService
                                               .authenticateUser(userName.text,
                                                   userPassword.text);
-                                          userName.clear();
-                                          userPassword.clear();
+
                                           if (response == "Authenticated") {
                                             await login(userName.text);
                                             navigateToInventory();
@@ -304,6 +299,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                 "Error Occured !");
                                           }
                                         }
+                                        userName.clear();
+                                        userPassword.clear();
                                       }
                                     },
                                     icon: const Icon(Icons.lock),

@@ -64,21 +64,35 @@ class _Index1State extends State<Index1> {
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width * 0.9,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10)),
+                    color: color7, borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Column(
-                      children: [
-                        Text(
-                          "Welcome",
-                          style: Theme.of(context).textTheme.headline3,
-                        ),
-                        Text(dateToday,
-                            style: Theme.of(context).textTheme.headline6),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Welcome",
+                            style: TextStyle(
+                                fontFamily: "Poppins",
+                                color: Colors.white,
+                                fontSize: 20),
+                          ),
+                          Text(
+                            dateToday,
+                            style: const TextStyle(
+                                fontFamily: "Poppins",
+                                color: Colors.white70,
+                                fontSize: 13),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.156,
@@ -254,13 +268,6 @@ class _Index1State extends State<Index1> {
                             getAllMedicinesOfParticularType(
                                 medicineTypesList[index].name);
                           });
-                          // await MedicineTypeDataBase.instance
-                          //     .deleteMedicineType(medicineTypesList[index].id!)
-                          //     .then((value) {
-                          //   setState(() {
-                          //     getAllMedicineTypes();
-                          //   });
-                          // });
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
