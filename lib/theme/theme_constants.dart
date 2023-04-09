@@ -7,8 +7,8 @@ const color3 = Color.fromRGBO(168, 168, 220, 1);
 const color4 = Color.fromRGBO(156, 223, 196, 1);
 const color5 = Color.fromRGBO(254, 254, 254, 1);
 const color6 = Color.fromRGBO(110, 120, 247, 1);
-const color7 = Color.fromRGBO(22, 27, 47, 1);
-const color9 = Color.fromRGBO(75, 85, 170, 1);
+const color9 = Color.fromRGBO(22, 27, 47, 1);
+const color7 = Color.fromRGBO(75, 85, 170, 1);
 const color8 = Colors.red;
 final font = GoogleFonts.poppins();
 
