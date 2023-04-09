@@ -129,9 +129,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
   bool signIn = true;
 
-  Future<void> login() async {
+  Future<void> login(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
+    await prefs.setString(
+      "username", username
+    );
   }
 
   @override
@@ -277,7 +280,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                 "The user with username already exists !");
                                           } else if (response ==
                                               "User added successfully") {
-                                            await login();
+                                            await login(userName.text);
                                             navigateToInventory();
                                           } else {
                                             showScaffoldMessenge(
@@ -290,7 +293,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           userName.clear();
                                           userPassword.clear();
                                           if (response == "Authenticated") {
-                                            await login();
+                                            await login(userName.text);
                                             navigateToInventory();
                                           } else if (response ==
                                               "Authentication Failed") {

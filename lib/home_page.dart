@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory/home.dart';
+import 'package:inventory/side_view.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:inventory/add_medicine.dart';
@@ -28,41 +29,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int bottomNavigationIndex = 0;
-  ThemeManager themeManager = ThemeManager();
-
-  void initState() {
-    // TODO: implement initState
-    themeManager.addListener(() {
-      themeListner();
-    });
-
-    super.initState();
-  }
-
-  themeListner() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   List<Widget> pages = const [Index1(), Index1(), Index1()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           widget.title,
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.displaySmall,
         ),
         actions: [
           TextButton(
               onPressed: () {
-                MedicineTypeDataBase.instance.exportDatabaseToCsv();
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const SideView()));
               },
               child: const Text("Get Data"))
         ],
