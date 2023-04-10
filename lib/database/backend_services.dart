@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:inventory/models/medicine.dart';
 import 'package:inventory/models/medicine_types.dart';
 
 class BackendService {
@@ -86,4 +87,29 @@ class BackendService {
       throw Exception('Failed to load medicine types');
     }
   }
+
+  Future<String> addMedicineForUser(
+    Medicine medicine, String username) async {
+  var url = "https://weightless-dimensio.000webhostapp.com/addMedicineForUser.php";
+  var response = await http.post(Uri.parse(url), body: {
+    'medicineName': medicine.medicineName,
+    'medicineDescription': medicine.medicineDescription,
+    'medicineQuantity': medicine.medicineQuantity,
+    'medicineType': medicine.medicineType,
+    'username': username
+  });
+
+  if (response.statusCode == 200) {
+    if (response.body == 'Medicine added successfully') {
+      return "Success";
+    } else if (response.body == 'Medicine type does not exist for this user') {
+      return 'Error: Medicine type does not exist for this user';
+    } else {
+      return 'Error adding medicine: ${response.body}';
+    }
+  } else {
+    return 'Error adding medicine: ${response.reasonPhrase}';
+  }
+}
+
 }

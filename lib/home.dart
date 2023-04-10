@@ -362,14 +362,15 @@ class _Index1State extends State<Index1> {
             child: ListView.builder(
                 itemCount: medicines.length,
                 itemBuilder: (context, index) {
-                  var jsonString = jsonDecode(medicines[index].quantity);
+                  var jsonString =
+                      jsonDecode(medicines[index].medicineQuantity);
                   Map<String, int> quantityMap =
                       Map<String, int>.from(jsonString);
                   LinkedHashMap<String, int> quantityLinkedMap =
                       LinkedHashMap.from(quantityMap);
                   int quantityInMedicine = quantityLinkedMap.entries.last.value;
                   return ListTile(
-                    leading: Text(medicines[index].name),
+                    leading: Text(medicines[index].medicineName),
                     trailing: Text("$quantityInMedicine"),
                   );
                 }))
@@ -434,9 +435,9 @@ class _Index1State extends State<Index1> {
                     ));
                   } else {
                     Medicine m = Medicine(
-                        name: medicineNameController.text,
-                        description: medicineDescriptionController.text,
-                        quantity: jsonQuantity.toString(),
+                        medicineName: medicineNameController.text,
+                        medicineDescription: medicineDescriptionController.text,
+                        medicineQuantity: jsonQuantity.toString(),
                         medicineType: medicineTypes.medicineTypeName);
 
                     // await MedicineTypeDataBase.instance

@@ -2,54 +2,51 @@
 
 const String medicineTable = 'medicineTable';
 
-class MedicineFields{
-  static const String id = '_id';
-  static const String name = 'name';
-  static const  String description = 'description';
-  static const String quantity = 'quantity';
-  static const String medicineType = 'medicine_type';
+class MedicineFields {
+  static const String medicineId = 'medicineId';
+  static const String medicineName = 'medicineName';
+  static const String medicineDescription = 'medicineDescription';
+  static const String medicineQuantity = 'medicineQuantity';
+  static const String medicineType = 'medicineType';
 }
+
 class Medicine {
-  late final int? id;
-  late final String name;
-  late final String description;
-  late final String quantity;
+  late final int? medicineId;
+  late final String medicineName;
+  late final String medicineDescription;
+  late final String medicineQuantity;
   late final String medicineType;
-  Medicine({
-    this.id,
-    required this.name,
-    required this.description,
-    required this.quantity,
-    required this.medicineType
-  });
+  Medicine(
+      {this.medicineId,
+      required this.medicineName,
+      required this.medicineDescription,
+      required this.medicineQuantity,
+      required this.medicineType});
 
-  Map<String , Object?> toJson() => {
-    MedicineFields.id: id,
-    MedicineFields.name: name,
-    MedicineFields.description: description,
-    MedicineFields.quantity: quantity,
-    MedicineFields.medicineType: medicineType
-  };
+  Map<String, Object?> toJson() => {
+        MedicineFields.medicineId: medicineId,
+        MedicineFields.medicineName: medicineName,
+        MedicineFields.medicineDescription: medicineDescription,
+        MedicineFields.medicineQuantity: medicineQuantity,
+        MedicineFields.medicineType: medicineType
+      };
 
-  Medicine copy({
-    int? id,
-    String? name,
-    String? description,
-    String? quantity,
-    String? medicineType
-  }) => Medicine(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    description: description ?? this.description,
-    quantity: quantity ?? this.quantity,
-    medicineType: medicineType ?? this.medicineType
-
-  );
+  Medicine copy(
+          {int? id,
+          String? name,
+          String? description,
+          String? quantity,
+          String? medicineType}) =>
+      Medicine(
+          medicineId: id ?? this.medicineId,
+          medicineName: name ?? this.medicineName,
+          medicineDescription: description ?? this.medicineDescription,
+          medicineQuantity: quantity ?? this.medicineQuantity,
+          medicineType: medicineType ?? this.medicineType);
   static Medicine fromJson(Map<String, Object?> json) => Medicine(
-    id: json[MedicineFields.id] as int?,
-    name: json[MedicineFields.name] as String,
-    description: json[MedicineFields.description] as String,
-    quantity: json[MedicineFields.quantity] as String,
-    medicineType: json[MedicineFields.medicineType] as String
-  );
+      medicineId: json[MedicineFields.medicineId] as int?,
+      medicineName: json[MedicineFields.medicineName] as String,
+      medicineDescription: json[MedicineFields.medicineDescription] as String,
+      medicineQuantity: json[MedicineFields.medicineQuantity] as String,
+      medicineType: json[MedicineFields.medicineType] as String);
 }
