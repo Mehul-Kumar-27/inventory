@@ -38,6 +38,7 @@ class _Index1State extends State<Index1> {
   String dateToday = DateFormat('dd-MM-yyyy').format(DateTime.now());
   getAllMedicineTypes() async {
     print("jhgfhksgfksgfksdgkh");
+    medicineTypesList.clear();
     await BackendService.getMedicineTypes(username).then((value) {
       setState(() {
         medicineTypesList = value;
@@ -45,13 +46,16 @@ class _Index1State extends State<Index1> {
     });
   }
 
-  getAllMedicinesOfParticularType(String medicineType) async {
-    // await MedicineTypeDataBase.instance
-    //     .readAllMedicineOfMedicineType(medicineType)
-    //     .then((value) {
-    //   medicines.clear();
-    //   medicines = value;
-    // });
+  getAllMedicinesOfParticularType(
+      String medicineTypeName, String username) async {
+    medicines.clear();
+    await BackendService.getAllMedicinesBelongingToAParticularMedicineType(
+            username, medicineTypeName)
+        .then((value) {
+      setState(() {
+        medicines = value;
+      });
+    });
   }
 
   List<MedicineTypes> medicineTypesList = [];
@@ -211,45 +215,6 @@ class _Index1State extends State<Index1> {
                             setState(() {
                               getAllMedicineTypes();
                             });
-
-                            // String medicineTypeQuantity = medicineType.quantity;
-                            // print(medicineTypeQuantity);
-
-                            // //String quantityString = quantity.toString();
-                            // print("ugfdjhdsdgfgvdsv");
-                            // //print(quantityString);
-                            // //print(quantity.containsKey('''"$dateToday"'''));
-                            // var jsonString = jsonDecode(medicineTypeQuantity);
-                            // print(jsonString);
-
-                            // // Map<String, dynamic> decoded = jsonDecode(jsonString);
-                            // Map<String, int> n = Map<String, int>.from(jsonString);
-                            // print("ugfdjhdsdgfgvdsv");
-                            // LinkedHashMap<String, int> newQuantity =
-                            //     LinkedHashMap.from(n);
-                            // print(newQuantity);
-                            // var dateTommorow = "06-04-2023";
-                            // print(dateTommorow);
-
-                            // if (newQuantity.containsKey(dateTommorow)) {
-                            //   newQuantity.update(dateToday, (value) => value + 1);
-                            // } else {
-                            //   final newDateEntry = <String, int>{dateTommorow: 5};
-                            //   newQuantity.addEntries(newDateEntry.entries);
-                            // }
-                            // print(newQuantity);
-
-                            // var newJson = jsonEncode(newQuantity);
-
-                            // print(newJson.toString());
-
-                            // var newQuantityJsonDecoded =
-                            //     jsonDecode(newJson.toString());
-                            // Map<String, int> qu =
-                            //     Map<String, int>.from(newQuantityJsonDecoded);
-                            // LinkedHashMap<String, int> qup = LinkedHashMap.from(qu);
-
-                            // print(qup.entries.last.value);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
@@ -283,12 +248,15 @@ class _Index1State extends State<Index1> {
 
                             return GestureDetector(
                               onTap: () async {
+                                getAllMedicinesOfParticularType(
+                                    medicineTypesList[index].medicineTypeName,
+                                    username);
                                 setState(() {
                                   listIndex = index;
                                   showingMedicines = true;
-                                  getAllMedicinesOfParticularType(
-                                      medicineTypesList[index]
-                                          .medicineTypeName);
+                                  // getAllMedicinesOfParticularType(
+                                  //     medicineTypesList[index]
+                                  //         .medicineTypeName);
                                 });
                               },
                               child: Padding(
@@ -485,6 +453,8 @@ class _Index1State extends State<Index1> {
                         medicineTypes.medicineTypeName,
                         username,
                         newQuantityJson.toString());
+                    getAllMedicinesOfParticularType(
+                        medicineTypes.medicineTypeName, username);
 
                     Navigator.pop(context);
 

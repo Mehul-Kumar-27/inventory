@@ -88,40 +88,6 @@ class BackendService {
     }
   }
 
-  // static Future<String> addMedicineInAParticularMedicineType(
-  //     Medicine medicine, String username) async {
-  //   print("Inthe add medicine section !!!!!!!!!!!!!!!!!!!!!!!!!!1");
-  //   var url =
-  //       "https://weightless-dimensio.000webhostapp.com/addMedicineInAParticularMedicineType.php";
-  //   var response = await http.post(Uri.parse(url), body: {
-  //     'medicineName': medicine.medicineName,
-  //     'medicineDescription': medicine.medicineDescription,
-  //     'medicineQuantity': medicine.medicineQuantity,
-  //     'medicineType': medicine.medicineType,
-  //     'username': username
-  //   });
-  //   print(response.statusCode);
-
-  //   if (response.statusCode == 200) {
-  //     print("${response.body}hgfgjfhjfguffugfhjfhjfjfgf");
-  //     if (response.body == 'Medicine added successfully') {
-  //       return "Medicine added successfully";
-  //     } else if (response.body ==
-  //         'Medicine type does not exist for this user') {
-  //       return 'Error: Medicine type does not exist for this user';
-  //     } else if (response.body ==
-  //         "Medicine name already exists for this user") {
-  //       return "Medicine name already exists for this user";
-  //     } else {
-  //       return 'Error adding medicine: ${response.body}';
-  //     }
-  //   } else {
-  //     print(response.body);
-  //     print(response.reasonPhrase);
-  //     return 'Error adding medicine: ${response.reasonPhrase}';
-  //   }
-  // }
-
   static Future<String> addMedicineInAParticularMedicineType(
       Medicine medicine, String username) async {
     var url =
@@ -184,6 +150,27 @@ class BackendService {
       print(response.statusCode);
       throw Exception(
           'Failed to update medicine type quantity: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Medicine>>
+      getAllMedicinesBelongingToAParticularMedicineType(
+          String username, String medicineTypeName) async {
+    print(username);
+    print(medicineTypeName);
+    const url =
+        "https://weightless-dimensio.000webhostapp.com/getAllMedicinesBelongingToAParticularMedicineType.php";
+    final response = await http.post(
+      Uri.parse(url),
+      body: {'username': username, 'medicineTypeName': medicineTypeName},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonList = json.decode(response.body) as List<dynamic>;
+      print(jsonList);
+      return jsonList.map((json) => Medicine.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load medicine types');
     }
   }
 }

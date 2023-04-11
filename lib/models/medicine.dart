@@ -44,7 +44,7 @@ class Medicine {
           medicineQuantity: quantity ?? this.medicineQuantity,
           medicineType: medicineType ?? this.medicineType);
   static Medicine fromJson(Map<String, Object?> json) => Medicine(
-      medicineId: json[MedicineFields.medicineId] as int?,
+     //medicineId: json[MedicineFields.medicineId] as int?,
       medicineName: json[MedicineFields.medicineName] as String,
       medicineDescription: json[MedicineFields.medicineDescription] as String,
       medicineQuantity: json[MedicineFields.medicineQuantity] as String,
