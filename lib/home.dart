@@ -348,7 +348,7 @@ class _Index1State extends State<Index1> {
                   await showDialog(
                       context: context,
                       builder: (context) {
-                        return popupForm(medicineTypes);
+                        return popupForm(medicineTypes, context);
                       });
                 },
                 icon: const Icon(
@@ -378,7 +378,12 @@ class _Index1State extends State<Index1> {
     );
   }
 
-  Widget popupForm(MedicineTypes medicineTypes) {
+  Widget popupForm(MedicineTypes medicineTypes, BuildContext context) {
+    showScaffoldMessenge(String message) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
+
     final _formKey = GlobalKey<FormState>();
     TextEditingController medicineNameController = TextEditingController();
     TextEditingController medicineDescriptionController =
@@ -440,13 +445,9 @@ class _Index1State extends State<Index1> {
                         medicineQuantity: jsonQuantity.toString(),
                         medicineType: medicineTypes.medicineTypeName);
 
-                    // await MedicineTypeDataBase.instance
-                    //     .createMedicine(m)
-                    //     .then((value) {
-                    //   setState(() {
-                    //     getAllMedicinesOfParticularType(medicineTypes.name);
-                    //   });
-                    // });
+                    String response = await BackendService
+                        .addMedicineInAParticularMedicineType(m, username);
+                    showScaffoldMessenge(response);
 
                     // List<MedicineTypes> type = await MedicineTypeDataBase
                     //     .instance

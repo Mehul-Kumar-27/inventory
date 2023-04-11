@@ -88,28 +88,32 @@ class BackendService {
     }
   }
 
-  Future<String> addMedicineForUser(
-    Medicine medicine, String username) async {
-  var url = "https://weightless-dimensio.000webhostapp.com/addMedicineForUser.php";
-  var response = await http.post(Uri.parse(url), body: {
-    'medicineName': medicine.medicineName,
-    'medicineDescription': medicine.medicineDescription,
-    'medicineQuantity': medicine.medicineQuantity,
-    'medicineType': medicine.medicineType,
-    'username': username
-  });
+  static Future<String> addMedicineInAParticularMedicineType(
+      Medicine medicine, String username) async {
+    var url =
+        "https://weightless-dimensio.000webhostapp.com/addMedicineInAParticularMedicineType.php";
+    var response = await http.post(Uri.parse(url), body: {
+      'medicineName': medicine.medicineName,
+      'medicineDescription': medicine.medicineDescription,
+      'medicineQuantity': medicine.medicineQuantity,
+      'medicineType': medicine.medicineType,
+      'username': username
+    });
 
-  if (response.statusCode == 200) {
-    if (response.body == 'Medicine added successfully') {
-      return "Success";
-    } else if (response.body == 'Medicine type does not exist for this user') {
-      return 'Error: Medicine type does not exist for this user';
+    if (response.statusCode == 200) {
+      if (response.body == 'Medicine added successfully') {
+        return "Medicine added successfully";
+      } else if (response.body ==
+          'Medicine type does not exist for this user') {
+        return 'Error: Medicine type does not exist for this user';
+      } else if (response.body ==
+          "Medicine name already exists for this user") {
+        return "Medicine name already exists for this user";
+      } else {
+        return 'Error adding medicine: ${response.body}';
+      }
     } else {
-      return 'Error adding medicine: ${response.body}';
+      return 'Error adding medicine: ${response.reasonPhrase}';
     }
-  } else {
-    return 'Error adding medicine: ${response.reasonPhrase}';
   }
-}
-
 }
