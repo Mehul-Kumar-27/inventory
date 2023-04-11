@@ -88,6 +88,40 @@ class BackendService {
     }
   }
 
+  // static Future<String> addMedicineInAParticularMedicineType(
+  //     Medicine medicine, String username) async {
+  //   print("Inthe add medicine section !!!!!!!!!!!!!!!!!!!!!!!!!!1");
+  //   var url =
+  //       "https://weightless-dimensio.000webhostapp.com/addMedicineInAParticularMedicineType.php";
+  //   var response = await http.post(Uri.parse(url), body: {
+  //     'medicineName': medicine.medicineName,
+  //     'medicineDescription': medicine.medicineDescription,
+  //     'medicineQuantity': medicine.medicineQuantity,
+  //     'medicineType': medicine.medicineType,
+  //     'username': username
+  //   });
+  //   print(response.statusCode);
+
+  //   if (response.statusCode == 200) {
+  //     print("${response.body}hgfgjfhjfguffugfhjfhjfjfgf");
+  //     if (response.body == 'Medicine added successfully') {
+  //       return "Medicine added successfully";
+  //     } else if (response.body ==
+  //         'Medicine type does not exist for this user') {
+  //       return 'Error: Medicine type does not exist for this user';
+  //     } else if (response.body ==
+  //         "Medicine name already exists for this user") {
+  //       return "Medicine name already exists for this user";
+  //     } else {
+  //       return 'Error adding medicine: ${response.body}';
+  //     }
+  //   } else {
+  //     print(response.body);
+  //     print(response.reasonPhrase);
+  //     return 'Error adding medicine: ${response.reasonPhrase}';
+  //   }
+  // }
+
   static Future<String> addMedicineInAParticularMedicineType(
       Medicine medicine, String username) async {
     var url =
@@ -114,6 +148,42 @@ class BackendService {
       }
     } else {
       return 'Error adding medicine: ${response.reasonPhrase}';
+    }
+  }
+
+  static Future<String> getMedicineTypeForAddingTheMedicine(
+      String medicineTypeName, String username) async {
+    const url =
+        "https://weightless-dimensio.000webhostapp.com/getAParticularMedicineTypeForAParticularUser.php";
+    var response = await http.post(Uri.parse(url),
+        body: {"medicineTypeName": medicineTypeName, "username": username});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response.body;
+    } else {
+      throw Exception('Failed to get medicine type: ${response.statusCode}');
+    }
+  }
+
+  static Future<String> updateAParticularMedicineTypeQuantity(
+      String medicineTypeName, String username, String newQuantity) async {
+    const url =
+        "https://weightless-dimensio.000webhostapp.com/updateAParticularMedicineTypeQuantity.php";
+    var response = await http.post(Uri.parse(url), body: {
+      "medicineTypeName": medicineTypeName,
+      "username": username,
+      "newQuantity": newQuantity
+    });
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response.body;
+    } else {
+      print(response.body);
+      print(response.statusCode);
+      throw Exception(
+          'Failed to update medicine type quantity: ${response.statusCode}');
     }
   }
 }

@@ -439,38 +439,63 @@ class _Index1State extends State<Index1> {
                       content: Text('Please fill all the fields'),
                     ));
                   } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        });
                     Medicine m = Medicine(
                         medicineName: medicineNameController.text,
                         medicineDescription: medicineDescriptionController.text,
                         medicineQuantity: jsonQuantity.toString(),
                         medicineType: medicineTypes.medicineTypeName);
 
-                    String response = await BackendService
+                    String addMedicineResponse = await BackendService
                         .addMedicineInAParticularMedicineType(m, username);
-                    showScaffoldMessenge(response);
+                    var response = await BackendService
+                        .getMedicineTypeForAddingTheMedicine(
+                            medicineTypes.medicineTypeName, username);
+                    print(response);
+                    var jsonQuantityfromMed = jsonDecode(response);
+                    print(jsonQuantityfromMed);
+                    MedicineTypes medType =
+                        MedicineTypes.fromJson(jsonQuantityfromMed);
+                    var quantity = jsonDecode(medType.medicineTypeQuantity);
+                    Map<String, int> mapMed = Map<String, int>.from(quantity);
+                    LinkedHashMap<String, int> linkedHashMapQuantiy =
+                        LinkedHashMap.from(mapMed);
+                    if (linkedHashMapQuantiy.containsKey(dateToday)) {
+                      linkedHashMapQuantiy.update(
+                          dateToday, (value) => value + 1);
+                    } else {
+                      int amount = linkedHashMapQuantiy.entries.last.value + 1;
+                      final newDateEntry = <String, int>{dateToday: amount};
+                      linkedHashMapQuantiy.addEntries(newDateEntry.entries);
+                    }
 
-                    // List<MedicineTypes> type = await MedicineTypeDataBase
-                    //     .instance
-                    //     .readAllMedicineTypesOfName(m.medicineType);
-                    // MedicineTypes medType = type[0];
-                    // var jsonQuantityfromMed = jsonDecode(medType.quantity);
-                    // Map<String, int> mapMed =
-                    //     Map<String, int>.from(jsonQuantityfromMed);
-                    // LinkedHashMap<String, int> linkedHashMapQuantiy =
-                    //     LinkedHashMap.from(mapMed);
-                    // if (linkedHashMapQuantiy.containsKey(dateToday)) {
-                    //   linkedHashMapQuantiy.update(
-                    //       dateToday, (value) => value + 1);
-                    // } else {
-                    //   int amount = linkedHashMapQuantiy.entries.last.value + 1;
-                    //   final newDateEntry = <String, int>{dateToday: amount};
-                    //   linkedHashMapQuantiy.addEntries(newDateEntry.entries);
-                    // }
+                    var newQuantityJson = jsonEncode(linkedHashMapQuantiy);
+                    print(newQuantityJson);
+                    await BackendService.updateAParticularMedicineTypeQuantity(
+                        medicineTypes.medicineTypeName,
+                        username,
+                        newQuantityJson.toString());
 
-                    // var newQuantityJson = jsonEncode(linkedHashMapQuantiy);
-                    // await MedicineTypeDataBase.instance
-                    //     .updateMedicineTypeQuantity(
-                    //         medType, newQuantityJson.toString());
+                    Navigator.pop(context);
+
+                    medicineNameController.clear();
+                    medicineDescriptionController.clear();
+                    medicineQuantityController.clear();
+                    Navigator.pop(context);
+
+                    print(
+                        "${addMedicineResponse}qwertyuiplk!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+                    showScaffoldMessenge(addMedicineResponse);
                   }
                 },
                 child: const Text('Save'),
