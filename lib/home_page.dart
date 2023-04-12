@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory/home.dart';
+import 'package:inventory/onboarding_screen.dart';
 import 'package:inventory/side%20view/side_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:inventory/add_medicine.dart';
@@ -46,16 +48,38 @@ class _MyHomePageState extends State<MyHomePage> {
                 bottomNavigationIndex == 0
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 12.0, left: 16.0),
-                            child: Text(
-                              "Inventory !",
-                              style: TextStyle(
-                                  fontFamily: "Poppins", fontSize: 30),
+                            padding:
+                                const EdgeInsets.only(top: 12.0, left: 16.0),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "Inventory !",
+                                  style: TextStyle(
+                                      fontFamily: "Poppins", fontSize: 30),
+                                ),
+                                const SizedBox(
+                                  width: 60,
+                                ),
+                                TextButton(
+                                    onPressed: () async {
+                                      SharedPreferences preferences =
+                                          await SharedPreferences.getInstance();
+                                      preferences.setString("username", "");
+                                      preferences.setBool('isLoggedIn', false);
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OnboardingScreen()),
+                                          (route) => false);
+                                    },
+                                    child: const Text("Logout"))
+                              ],
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(left: 16.0, bottom: 10),
                             child: Text(
                               "Manage your shop like Pro",
@@ -71,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(child: pages[bottomNavigationIndex]),
               ],
             ),
-            
           ],
         ),
       ),

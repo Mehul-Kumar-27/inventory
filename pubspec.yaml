@@ -49,6 +49,7 @@ dependencies:
   lottie: ^2.3.2
   rive: ^0.10.3
   shared_preferences: ^2.1.0
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:

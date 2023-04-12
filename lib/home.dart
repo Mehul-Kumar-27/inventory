@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 import 'package:inventory/add_medicine.dart';
 import 'package:inventory/database/backend_services.dart';
+import 'package:inventory/medicine_detail.dart';
 
 import 'package:inventory/models/medicine.dart';
 import 'package:inventory/models/medicine_types.dart';
@@ -290,6 +291,25 @@ class _Index1State extends State<Index1> {
   }
 
   Widget medicineList(MedicineTypes medicineTypes) {
+    bool isSearching = false;
+    List<Medicine> filterMedicines = medicines;
+    searchByName(String medicineName) {
+      setState(() {
+        if (medicineName == "All") {
+          setState(() {
+            medicines = filterMedicines;
+          });
+        } else {
+          medicines = filterMedicines
+              .where((med) =>
+                  med.medicineName.toLowerCase().contains(medicineName))
+              .toList();
+        }
+      });
+    }
+
+    final TextEditingController searchController = TextEditingController();
+    String _selectedSortOption = 'Sort by Name';
     return Column(
       children: [
         Row(
@@ -298,6 +318,7 @@ class _Index1State extends State<Index1> {
             IconButton(
                 onPressed: () {
                   setState(() {
+                    getAllMedicineTypes();
                     showingMedicines = false;
                   });
                 },
@@ -326,22 +347,99 @@ class _Index1State extends State<Index1> {
                 ))
           ],
         ),
+        Container(
+          margin: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            color: Colors.white,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextField(
+                    controller: searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter Name to Search...',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: DropdownButton<String>(
+                  items: const [
+                    DropdownMenuItem<String>(
+                      value: 'quantity',
+                      child: Text('Sort by quantity'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'name',
+                      child: Text('Sort by name'),
+                    ),
+                  ],
+                  onChanged: (value) {},
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.black,
+                  ),
+                  underline: const SizedBox.shrink(),
+                  dropdownColor: Colors.white,
+                  elevation: 0,
+                  iconEnabledColor: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  setState(() {
+                    searchByName(searchController.text.toLowerCase());
+                    isSearching = !isSearching;
+                    print(isSearching);
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
         Expanded(
             child: ListView.builder(
                 itemCount: medicines.length,
                 itemBuilder: (context, index) {
                   var jsonString =
-                      jsonDecode(medicines[index].medicineQuantity);
+                      jsonDecode(filterMedicines[index].medicineQuantity);
                   Map<String, int> quantityMap =
                       Map<String, int>.from(jsonString);
                   LinkedHashMap<String, int> quantityLinkedMap =
                       LinkedHashMap.from(quantityMap);
                   int quantityInMedicine = quantityLinkedMap.entries.last.value;
+
                   return ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MedicineDetail(
+                                  medicine: medicines[index], username: username)));
+                    },
                     leading: Text(medicines[index].medicineName),
                     trailing: Text("$quantityInMedicine"),
                   );
-                }))
+                })),
       ],
     );
   }
