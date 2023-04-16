@@ -434,10 +434,26 @@ class _Index1State extends State<Index1> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => MedicineDetail(
-                                  medicine: medicines[index], username: username)));
+                                  medicine: medicines[index],
+                                  username: username)));
                     },
-                    leading: Text(medicines[index].medicineName),
-                    trailing: Text("$quantityInMedicine"),
+                    leading: const Icon(
+                      Icons.medication,
+                      color: color9,
+                    ),
+                    title: Text(
+                      medicines[index].medicineName,
+                      style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Text(
+                      medicines[index].medicineExpireDate,
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w400),
+                    ),
+                    subtitle: Text("Quantity : $quantityInMedicine"),
                   );
                 })),
       ],
@@ -445,6 +461,27 @@ class _Index1State extends State<Index1> {
   }
 
   Widget popupForm(MedicineTypes medicineTypes, BuildContext context) {
+    DateTime _selectedDate;
+    TextEditingController medicineExpiryDateController =
+        TextEditingController();
+    Future<void> selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101),
+      );
+
+      if (picked != null) {
+        setState(() {
+          _selectedDate = picked;
+
+          medicineExpiryDateController.text =
+              _selectedDate.toString().split(" ")[0];
+        });
+      }
+    }
+
     showScaffoldMessenge(String message) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
@@ -455,6 +492,7 @@ class _Index1State extends State<Index1> {
     TextEditingController medicineDescriptionController =
         TextEditingController();
     TextEditingController medicineQuantityController = TextEditingController();
+
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -482,25 +520,25 @@ class _Index1State extends State<Index1> {
                   labelText: 'Quantity',
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  selectDate(context);
+                },
+                child: TextFormField(
+                  enabled: false,
+                  controller: medicineExpiryDateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Expiry Date',
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  print(medicineNameController.text);
-                  print(medicineDescriptionController.text);
-                  print(medicineQuantityController.text);
-                  int quantityNumber =
-                      int.parse(medicineQuantityController.text);
-                  Map<String, int> q = {dateToday: quantityNumber};
-                  print(q);
-                  LinkedHashMap<String, int> quantity = LinkedHashMap.from(q);
-                  print("ugfdjhdsdgfgvdsv");
-                  var jsonQuantity = jsonEncode(quantity);
-                  print(jsonQuantity);
-                  print(quantity);
-
                   if (medicineNameController.text.isEmpty ||
                       medicineDescriptionController.text.isEmpty ||
-                      medicineQuantityController.text.isEmpty) {
+                      medicineQuantityController.text.isEmpty ||
+                      medicineExpiryDateController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Please fill all the fields'),
                     ));
@@ -516,41 +554,63 @@ class _Index1State extends State<Index1> {
                             ),
                           );
                         });
+                    print(medicineNameController.text);
+                    print(medicineDescriptionController.text);
+                    print(medicineQuantityController.text);
+                    int quantityNumber =
+                        int.parse(medicineQuantityController.text);
+                    Map<String, int> q = {dateToday: quantityNumber};
+                    print(q);
+                    LinkedHashMap<String, int> quantityLinkedMap =
+                        LinkedHashMap.from(q);
+                    print("ugfdjhdsdgfgvdsv");
+                    var jsonQuantity = jsonEncode(quantityLinkedMap);
+                    print(jsonQuantity);
+                    print(quantityLinkedMap);
+                    print(medicineExpiryDateController.text);
                     Medicine m = Medicine(
                         medicineName: medicineNameController.text,
                         medicineDescription: medicineDescriptionController.text,
                         medicineQuantity: jsonQuantity.toString(),
-                        medicineType: medicineTypes.medicineTypeName);
+                        medicineType: medicineTypes.medicineTypeName,
+                        medicineExpireDate: medicineExpiryDateController.text);
 
                     String addMedicineResponse = await BackendService
                         .addMedicineInAParticularMedicineType(m, username);
-                    var response = await BackendService
-                        .getMedicineTypeForAddingTheMedicine(
-                            medicineTypes.medicineTypeName, username);
-                    print(response);
-                    var jsonQuantityfromMed = jsonDecode(response);
-                    print(jsonQuantityfromMed);
-                    MedicineTypes medType =
-                        MedicineTypes.fromJson(jsonQuantityfromMed);
-                    var quantity = jsonDecode(medType.medicineTypeQuantity);
-                    Map<String, int> mapMed = Map<String, int>.from(quantity);
-                    LinkedHashMap<String, int> linkedHashMapQuantiy =
-                        LinkedHashMap.from(mapMed);
-                    if (linkedHashMapQuantiy.containsKey(dateToday)) {
-                      linkedHashMapQuantiy.update(
-                          dateToday, (value) => value + 1);
-                    } else {
-                      int amount = linkedHashMapQuantiy.entries.last.value + 1;
-                      final newDateEntry = <String, int>{dateToday: amount};
-                      linkedHashMapQuantiy.addEntries(newDateEntry.entries);
-                    }
 
-                    var newQuantityJson = jsonEncode(linkedHashMapQuantiy);
-                    print(newQuantityJson);
-                    await BackendService.updateAParticularMedicineTypeQuantity(
-                        medicineTypes.medicineTypeName,
-                        username,
-                        newQuantityJson.toString());
+                    if (addMedicineResponse == "Medicine added successfully") {
+                      var response = await BackendService
+                          .getMedicineTypeForAddingTheMedicine(
+                              medicineTypes.medicineTypeName, username);
+                      print(response);
+                      var jsonQuantityfromMed = jsonDecode(response);
+                      print(jsonQuantityfromMed);
+                      MedicineTypes medType =
+                          MedicineTypes.fromJson(jsonQuantityfromMed);
+                      var quantity = jsonDecode(medType.medicineTypeQuantity);
+                      Map<String, int> mapMed = Map<String, int>.from(quantity);
+                      LinkedHashMap<String, int> linkedHashMapQuantiy =
+                          LinkedHashMap.from(mapMed);
+                      if (linkedHashMapQuantiy.containsKey(dateToday)) {
+                        linkedHashMapQuantiy.update(
+                            dateToday, (value) => value + 1);
+                      } else {
+                        int amount =
+                            linkedHashMapQuantiy.entries.last.value + 1;
+                        final newDateEntry = <String, int>{dateToday: amount};
+                        linkedHashMapQuantiy.addEntries(newDateEntry.entries);
+                      }
+
+                      var newQuantityJson = jsonEncode(linkedHashMapQuantiy);
+                      print(newQuantityJson);
+                      await BackendService
+                          .updateAParticularMedicineTypeQuantity(
+                              medicineTypes.medicineTypeName,
+                              username,
+                              newQuantityJson.toString());
+                    }
+                    ////////////////////////////////////////////
+
                     getAllMedicinesOfParticularType(
                         medicineTypes.medicineTypeName, username);
 

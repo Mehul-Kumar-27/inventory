@@ -49,7 +49,8 @@ class BackendService {
       'medicineTypeName': medicineTypes.medicineTypeName,
       'medicineTypeDescription': medicineTypes.medicineTypeDescription,
       'medicineTypeQuantity': medicineTypes.medicineTypeQuantity,
-      'username': username
+      'username': username,
+
     });
 
     if (response.statusCode == 200) {
@@ -97,7 +98,8 @@ class BackendService {
       'medicineDescription': medicine.medicineDescription,
       'medicineQuantity': medicine.medicineQuantity,
       'medicineType': medicine.medicineType,
-      'username': username
+      'username': username,
+      'medicineExpireDate': medicine.medicineExpireDate,
     });
 
     if (response.statusCode == 200) {
