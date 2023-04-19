@@ -50,7 +50,6 @@ class BackendService {
       'medicineTypeDescription': medicineTypes.medicineTypeDescription,
       'medicineTypeQuantity': medicineTypes.medicineTypeQuantity,
       'username': username,
-
     });
 
     if (response.statusCode == 200) {
@@ -173,6 +172,25 @@ class BackendService {
       return jsonList.map((json) => Medicine.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load medicine types');
+    }
+  }
+
+  static Future<String> updateMedicine(Medicine m, String username) async {
+    const url =
+        'https://weightless-dimensio.000webhostapp.com/updateMedicineForAUser.php';
+    final response = await http.post(Uri.parse(url), body: {
+      'medicineName': m.medicineName,
+      'medicineDescription': m.medicineDescription,
+      'medicineQuantity': m.medicineQuantity,
+      'medicineType': m.medicineType,
+      'medicineExpireDate': m.medicineExpireDate,
+      'username': username,
+    });
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to update medicine');
     }
   }
 }
