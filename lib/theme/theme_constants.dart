@@ -1,16 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const color1 = Color.fromRGBO(50, 50, 66, 1);
+const color1 = Color.fromARGB(071370, 7, 19, 112);
 const color2 = Color.fromRGBO(109, 109, 143, 1);
 const color3 = Color.fromRGBO(168, 168, 220, 1);
 const color4 = Color.fromRGBO(156, 223, 196, 1);
 const color5 = Color.fromRGBO(254, 254, 254, 1);
-const color6 = Color.fromRGBO(110, 120, 247, 1);
+const color6 = Color.fromRGBO(3, 218, 197, 1);
 const color9 = Color.fromRGBO(22, 27, 47, 1);
-const color7 = Color.fromRGBO(75, 85, 170, 1);
+const color7 = Color.fromARGB(071370, 7, 19, 112);
 const color8 = Colors.red;
 final font = GoogleFonts.poppins();
+
+const kColorScheme = ColorScheme(
+  primary: Color.fromARGB(071370, 7, 19, 112),
+  onPrimary: Color.fromARGB(255, 255, 255, 255),
+  secondary: Color.fromRGBO(90, 93, 187, 1),
+  tertiary: Color.fromARGB(255, 37, 249, 26),
+  brightness: Brightness.light,
+  onSecondary: Color.fromARGB(255, 0, 0, 0),
+  error: Colors.red,
+  onError: Colors.black,
+  onBackground: Color.fromARGB(255, 0, 0, 0),
+  onSurface: Color.fromARGB(255, 0, 0, 0),
+  background: Color.fromARGB(255, 255, 255, 255),
+  surface: Color.fromARGB(255, 255, 255, 255),
+);
+
+const kDarkColorScheme = ColorScheme(
+    primary: Color.fromRGBO(3, 218, 197, 1),
+    onPrimary: Colors.black,
+    secondary: Color.fromRGBO(187, 134, 252, 1),
+    tertiary: Color.fromARGB(255, 37, 249, 26),
+    brightness: Brightness.dark,
+    onSecondary: Colors.black,
+    error: Colors.redAccent,
+    onError: Colors.black,
+    onBackground: Colors.white,
+    onSurface: Colors.white,
+    background: Colors.black,
+    surface: Colors.black);
 
 ThemeData lighTheme = ThemeData(
     backgroundColor: color5,

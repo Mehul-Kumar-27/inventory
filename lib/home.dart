@@ -218,7 +218,7 @@ class _Index1State extends State<Index1> {
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: color7,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 10),
                             shape: RoundedRectangleBorder(

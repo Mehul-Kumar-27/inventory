@@ -58,7 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 const Text(
                   "Inventory",
                   style: TextStyle(
-                      fontFamily: 'Poppins', fontSize: 60, height: 1.2),
+                      fontFamily: 'Poppins', fontSize: 55, height: 1.2),
                 ),
                 const Text(
                   "Manage Your Shop like Pro !",
@@ -315,9 +315,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Text("Or"),
                               ],
                             ),
