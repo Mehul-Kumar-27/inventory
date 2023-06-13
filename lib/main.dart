@@ -4,7 +4,6 @@ import 'package:inventory/home_page.dart';
 import 'package:inventory/login.dart';
 import 'package:inventory/onboarding_screen.dart';
 
-
 import 'package:inventory/theme/theme_constants.dart';
 import 'package:inventory/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,7 +38,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getSharedPreferences();
 
     super.initState();
